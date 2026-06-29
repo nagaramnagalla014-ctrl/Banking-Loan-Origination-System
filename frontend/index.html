@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoanFlow — Banking Loan Origination System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#080c14;--bg-alt:#0d1424;--card:rgba(255,255,255,0.035);--border:rgba(255,255,255,0.07);--text:#e2e8f0;--muted:#64748b;--blue:#4f8ef7;--purple:#8b5cf6;--cyan:#06d6c0;--green:#22d3a5;--red:#f43f5e;--yellow:#f59e0b}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh}
+.demo-banner{background:rgba(245,158,11,0.15);border-bottom:1px solid rgba(245,158,11,0.3);color:#f59e0b;text-align:center;padding:8px 16px;font-size:13px;font-weight:500}
+.navbar{display:flex;align-items:center;gap:24px;padding:0 24px;height:60px;background:rgba(13,20,36,0.95);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.nav-brand{font-size:18px;font-weight:700;background:linear-gradient(135deg,#22d3a5,#4f8ef7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;gap:4px}
+.nav-link{padding:6px 14px;border-radius:6px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
+.nav-link:hover,.nav-link.active{background:rgba(34,211,165,0.12);color:var(--green)}
+.main{padding:24px;max-width:1400px;margin:0 auto}
+.tab{display:none}.tab.active{display:block}
+.page-header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.page-header h1{font-size:22px;font-weight:700}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;align-items:center;gap:14px}
+.stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.si-blue{background:rgba(79,142,247,0.15);color:var(--blue)}.si-green{background:rgba(34,211,165,0.15);color:var(--green)}.si-yellow{background:rgba(245,158,11,0.15);color:var(--yellow)}.si-red{background:rgba(244,63,94,0.15);color:var(--red)}
+.stat-value{font-size:26px;font-weight:700;line-height:1}.stat-label{font-size:12px;color:var(--muted);margin-top:2px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-header h2{font-size:15px;font-weight:600}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.b-green{background:rgba(34,211,165,0.15);color:var(--green);border:1px solid rgba(34,211,165,0.3)}
+.b-blue{background:rgba(79,142,247,0.15);color:var(--blue);border:1px solid rgba(79,142,247,0.3)}
+.b-yellow{background:rgba(245,158,11,0.15);color:var(--yellow);border:1px solid rgba(245,158,11,0.3)}
+.b-red{background:rgba(244,63,94,0.15);color:var(--red);border:1px solid rgba(244,63,94,0.3)}
+.b-purple{background:rgba(139,92,246,0.15);color:var(--purple);border:1px solid rgba(139,92,246,0.3)}
+.pipeline{display:flex;gap:0;margin-bottom:24px}
+.pipe-step{flex:1;padding:16px;background:var(--card);border:1px solid var(--border);border-right:none;text-align:center;position:relative}
+.pipe-step:last-child{border-right:1px solid var(--border);border-radius:0 10px 10px 0}
+.pipe-step:first-child{border-radius:10px 0 0 10px}
+.pipe-step::after{content:'›';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--muted);z-index:1}
+.pipe-step:last-child::after{display:none}
+.pipe-count{font-size:22px;font-weight:700}.pipe-label{font-size:11px;color:var(--muted);margin-top:4px}
+.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-card{padding:20px;display:flex;flex-direction:column;gap:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+.form-group input,.form-group select{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px}
+.btn-primary{padding:12px 24px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--green),var(--blue));color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px}
+.credit-score{font-size:36px;font-weight:700;text-align:center;padding:20px;color:var(--green)}
+.credit-label{text-align:center;font-size:12px;color:var(--muted);padding-bottom:20px}
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.section-grid{grid-template-columns:1fr}.pipeline{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="demo-banner"><i class="fas fa-flask"></i> UI Demo — backend requires local setup (Java 8 · Spring Boot · Hibernate · Oracle · RabbitMQ · Docker)</div>
+<nav class="navbar">
+  <div class="nav-brand"><i class="fas fa-building-columns"></i> LoanFlow</div>
+  <div class="nav-links">
+    <a class="nav-link active" onclick="showTab('dashboard',this)">Dashboard</a>
+    <a class="nav-link" onclick="showTab('apply',this)">Apply</a>
+    <a class="nav-link" onclick="showTab('applications',this)">Applications</a>
+    <a class="nav-link" onclick="showTab('underwriting',this)">Underwriting</a>
+  </div>
+</nav>
+<main class="main">
+  <div id="tab-dashboard" class="tab active">
+    <div class="page-header"><h1>Loan Operations Dashboard</h1></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon si-blue"><i class="fas fa-file-invoice-dollar"></i></div><div><div class="stat-value">1,482</div><div class="stat-label">Total Applications</div></div></div>
+      <div class="stat-card"><div class="stat-icon si-green"><i class="fas fa-circle-check"></i></div><div><div class="stat-value">847</div><div class="stat-label">Approved</div></div></div>
+      <div class="stat-card"><div class="stat-icon si-yellow"><i class="fas fa-clock"></i></div><div><div class="stat-value">124</div><div class="stat-label">Pending Review</div></div></div>
+      <div class="stat-card"><div class="stat-icon si-red"><i class="fas fa-ban"></i></div><div><div class="stat-value">511</div><div class="stat-label">Rejected</div></div></div>
+    </div>
+    <div class="pipeline">
+      <div class="pipe-step"><div class="pipe-count" style="color:var(--blue)">1,482</div><div class="pipe-label">Applications</div></div>
+      <div class="pipe-step"><div class="pipe-count" style="color:var(--cyan)">1,201</div><div class="pipe-label">Credit Check</div></div>
+      <div class="pipe-step"><div class="pipe-count" style="color:var(--purple)">984</div><div class="pipe-label">Underwriting</div></div>
+      <div class="pipe-step"><div class="pipe-count" style="color:var(--yellow)">871</div><div class="pipe-label">Doc Validation</div></div>
+      <div class="pipe-step"><div class="pipe-count" style="color:var(--green)">847</div><div class="pipe-label">Approved</div></div>
+      <div class="pipe-step"><div class="pipe-count" style="color:var(--green)">782</div><div class="pipe-label">Disbursed</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h2>Recent Applications</h2></div>
+      <table><thead><tr><th>Application ID</th><th>Applicant</th><th>Type</th><th>Amount</th><th>Credit Score</th><th>Stage</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>LA-2024-0482</td><td>Arjun Sharma</td><td>Home Loan</td><td>$450,000</td><td>780</td><td>Underwriting</td><td><span class="badge b-blue">In Progress</span></td></tr>
+        <tr><td>LA-2024-0481</td><td>Meena Reddy</td><td>Personal Loan</td><td>$25,000</td><td>720</td><td>Doc Validation</td><td><span class="badge b-yellow">Pending Docs</span></td></tr>
+        <tr><td>LA-2024-0480</td><td>Ravi Kumar</td><td>Auto Loan</td><td>$38,000</td><td>695</td><td>Approved</td><td><span class="badge b-green">Approved</span></td></tr>
+        <tr><td>LA-2024-0479</td><td>Sunita Patel</td><td>Business Loan</td><td>$120,000</td><td>640</td><td>Credit Check</td><td><span class="badge b-red">Rejected</span></td></tr>
+        <tr><td>LA-2024-0478</td><td>Deepak Nair</td><td>Home Loan</td><td>$320,000</td><td>810</td><td>Disbursed</td><td><span class="badge b-green">Disbursed</span></td></tr>
+        <tr><td>LA-2024-0477</td><td>Anjali Mehta</td><td>Personal Loan</td><td>$15,000</td><td>755</td><td>Approved</td><td><span class="badge b-green">Approved</span></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+  <div id="tab-apply" class="tab">
+    <div class="page-header"><h1>New Loan Application</h1></div>
+    <div class="section-grid">
+      <div class="card">
+        <div class="card-header"><h2>Applicant Details</h2></div>
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" placeholder="John"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" placeholder="Doe"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Loan Type</label><select><option>Home Loan</option><option>Personal Loan</option><option>Auto Loan</option><option>Business Loan</option><option>Education Loan</option></select></div>
+            <div class="form-group"><label>Loan Amount ($)</label><input type="number" placeholder="50000"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Annual Income ($)</label><input type="number" placeholder="85000"></div>
+            <div class="form-group"><label>Employment Type</label><select><option>Salaried</option><option>Self-Employed</option><option>Business Owner</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Tenure (months)</label><select><option>12</option><option>24</option><option>36</option><option>60</option><option>120</option><option>240</option></select></div>
+            <div class="form-group"><label>Purpose</label><input type="text" placeholder="Home purchase, Debt consolidation..."></div>
+          </div>
+          <button class="btn-primary" onclick="alert('Application submitted! (demo mode) Ref: LA-2024-0483')"><i class="fas fa-paper-plane"></i> Submit Application</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2>Loan Eligibility Preview</h2></div>
+        <div class="credit-score">780</div>
+        <div class="credit-label">Simulated Credit Score — EXCELLENT</div>
+        <table><thead><tr><th>Factor</th><th>Value</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td>Payment History</td><td>On-time</td><td><span class="badge b-green">+High</span></td></tr>
+          <tr><td>Credit Utilization</td><td>22%</td><td><span class="badge b-green">+Good</span></td></tr>
+          <tr><td>Credit Age</td><td>8 years</td><td><span class="badge b-green">+Good</span></td></tr>
+          <tr><td>Debt-to-Income</td><td>28%</td><td><span class="badge b-yellow">Moderate</span></td></tr>
+          <tr><td>Hard Inquiries</td><td>1</td><td><span class="badge b-green">+Low</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+  <div id="tab-applications" class="tab">
+    <div class="page-header"><h1>All Applications</h1></div>
+    <div class="card">
+      <table><thead><tr><th>ID</th><th>Applicant</th><th>Type</th><th>Amount</th><th>Rate</th><th>Tenure</th><th>Submitted</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>LA-2024-0482</td><td>Arjun Sharma</td><td>Home Loan</td><td>$450,000</td><td>5.8%</td><td>240 mo</td><td>2024-01-15</td><td><span class="badge b-blue">Under Review</span></td></tr>
+        <tr><td>LA-2024-0481</td><td>Meena Reddy</td><td>Personal Loan</td><td>$25,000</td><td>9.5%</td><td>60 mo</td><td>2024-01-14</td><td><span class="badge b-yellow">Docs Pending</span></td></tr>
+        <tr><td>LA-2024-0480</td><td>Ravi Kumar</td><td>Auto Loan</td><td>$38,000</td><td>6.2%</td><td>60 mo</td><td>2024-01-13</td><td><span class="badge b-green">Approved</span></td></tr>
+        <tr><td>LA-2024-0479</td><td>Sunita Patel</td><td>Business Loan</td><td>$120,000</td><td>—</td><td>—</td><td>2024-01-12</td><td><span class="badge b-red">Rejected</span></td></tr>
+        <tr><td>LA-2024-0478</td><td>Deepak Nair</td><td>Home Loan</td><td>$320,000</td><td>5.5%</td><td>240 mo</td><td>2024-01-10</td><td><span class="badge b-green">Disbursed</span></td></tr>
+        <tr><td>LA-2024-0477</td><td>Anjali Mehta</td><td>Personal Loan</td><td>$15,000</td><td>8.9%</td><td>36 mo</td><td>2024-01-09</td><td><span class="badge b-green">Approved</span></td></tr>
+        <tr><td>LA-2024-0476</td><td>Sanjay Gupta</td><td>Education Loan</td><td>$65,000</td><td>4.2%</td><td>120 mo</td><td>2024-01-08</td><td><span class="badge b-green">Disbursed</span></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+  <div id="tab-underwriting" class="tab">
+    <div class="page-header"><h1>Underwriting Queue</h1></div>
+    <div class="card">
+      <table><thead><tr><th>Application ID</th><th>Applicant</th><th>Amount</th><th>LTV Ratio</th><th>DTI Ratio</th><th>Risk Level</th><th>Underwriter</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>LA-2024-0482</td><td>Arjun Sharma</td><td>$450,000</td><td>72%</td><td>28%</td><td><span class="badge b-green">Low</span></td><td>Sarah M.</td><td><span class="badge b-blue">Review</span></td></tr>
+        <tr><td>LA-2024-0475</td><td>Kiran Das</td><td>$185,000</td><td>85%</td><td>36%</td><td><span class="badge b-yellow">Medium</span></td><td>James K.</td><td><span class="badge b-blue">Review</span></td></tr>
+        <tr><td>LA-2024-0471</td><td>Pooja Nair</td><td>$92,000</td><td>60%</td><td>22%</td><td><span class="badge b-green">Low</span></td><td>Sarah M.</td><td><span class="badge b-green">Approve</span></td></tr>
+        <tr><td>LA-2024-0468</td><td>Ramesh Iyer</td><td>$340,000</td><td>91%</td><td>44%</td><td><span class="badge b-red">High</span></td><td>James K.</td><td><span class="badge b-red">Flag</span></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</main>
+<script>
+function showTab(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
